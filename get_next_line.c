@@ -10,10 +10,12 @@ char	*get_next_line(int fd)
 	read(fd, &buf, 1);
 	while (buf != '\n')
 	{
-		res = ft_strjoin(res, (char *)buf);
+		res = ft_strjoin(res, buf);
+		printf("%s", res);
 		read(fd, &buf, 1);
 	}
-	res = ft_strjoin(res, "\n");
+	res = ft_strjoin(res, '\n');
+	return (res);
 }
 
 int	main()
