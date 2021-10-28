@@ -16,71 +16,78 @@
 #include <stdio.h>
 
 
+static char	*ft_check_ost(char *ost, char **res, int n_read)
+{
+	char	*p_n;
+	p_n = ft_strchr(ost, '\n');
+	if (p_n)
+	{
+		*p_n = '\0';
+		*res = ft_strdup(ost);
+		*res = ft_strjoin(*res, "\n");
+		p_n++;
+		if (*p_n != '\0')
+			ost = p_n;
+		else
+			ost = NULL;
+	}
+	else if (!p_n && n_read == 0)
+	{
+		*res = ft_strdup(ost);
+		ost = NULL;
+	}
+	//printf("OSt = %s\n", ost);
+	return(ost);
+}
+
 char	*get_next_line(int fd)
 {
-	char	buf[BUFFER_SIZE + 1];
-	char	*p_n = NULL;
-	static char 	*ost;
-	char *res = NULL;
-	char *tmp;
-	int n_read;
-	
-	//printf("ost = %s", ost);
-	while (!p_n && !res)
-	{
-		if (ost)
-			p_n = ft_strchr(ost, '\n');
-		//printf("ost = %s\n", ost);
-		if (p_n)
-		{
-			*p_n = '\0';
-			res = ost;
+	char		buf[BUFFER_SIZE + 1];
+	char		*res;
+	static char	*ost;
+	int			n_read;
 
-			ost = ++p_n;
-			if (ost[0] == '\0')
+	res = NULL;
+	while (!res)
+	{
+		n_read = read(fd, &buf, BUFFER_SIZE);
+		buf[n_read] = '\0';
+		if (n_read > 0)
+		{
+			if (ost)
+				ost = ft_strjoin(ost, buf);
+			else
+				ost = ft_strdup(buf);
+		}
+		else if (n_read == 0)
+		{
+			if (ost)
 			{
-				ost = NULL;
-				return (NULL);
+				ost = ft_check_ost(ost, &res, n_read);
+				if (res)
+					return (res);
 			}
-			if (res[0] == '\0')
-				return ("\n");
-			return (res);
+			else
+				return (NULL);
 		}
 		else
-		{
-			n_read = read(fd, &buf, BUFFER_SIZE);
-			if (n_read > 0)
-			{
-				buf[n_read] = '\0';
-				//printf("BUF=%s\n", buf);
-				//printf("%s", ost);
-				if (!ost)
-				{
-					ost = malloc(2);
-					ost[0] = '\0';
-				}
-				tmp = ost;
-				ost = ft_strjoin(ost, buf);
-				free(tmp);
-			}
-			else if (n_read == 0)
-			{
-				ost = ft_strjoin(ost, "\n");
-			}
-			else if (n_read < 0)
-			{
-				return (NULL);
-			}
-		}
+			return (NULL);
+		ost = ft_check_ost(ost, &res,n_read);
 	}
-	//printf("LAST ost = %s", ost);
 	return (res);
 }
 
-// int main()
+//  int main()
 // {
 // 	int fd;
 // 	fd = open("test.txt", O_RDONLY);
-// 	printf("res = %s\n", get_next_line(fd));
-// 	printf("res = %s\n", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
+// 	printf("res = %s", get_next_line(fd));
 // }
