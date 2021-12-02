@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: sazelda <sazelda@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/25 15:06:31 by sazelda           #+#    #+#             */
-/*   Updated: 2021/12/02 13:21:20 by sazelda          ###   ########.fr       */
+/*   Created: 2021/11/24 16:26:15 by chorse            #+#    #+#             */
+/*   Updated: 2021/12/02 16:09:55 by sazelda          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ static char	*ft_check_ost(char *ost, char **res, int n_read)
 	int id_n;
 	//char		*for_free;
 	int i;
+	char *tmp;
 	id_n = find_n(ost);
 	//p_n = ft_strchr(ost, '\n');
 	if (id_n != -1)
@@ -47,14 +48,32 @@ static char	*ft_check_ost(char *ost, char **res, int n_read)
 		}
 		(*res)[i] = '\0';
 		if (ost[i] != '\0')
-			ost = &ost[i];
+		{
+			tmp = ost;
+			ost = malloc(ft_strlen(ost)-id_n+1);
+			i = 0;
+			while (id_n < (int)ft_strlen(tmp))
+			{
+				ost[i] = tmp[id_n];
+				i++;
+				id_n++;
+			}
+			ost[i] = '\0';
+			free(tmp);
+		}
 		else
-			ost = NULL;
+		{
+			free(ost);
+			return (NULL);
+		};
 	}
 	else if (id_n == -1 && n_read == 0)
 	{
 		*res = ft_strdup(ost);
+		if (ost)
+			free(ost);
 		ost = NULL;
+		return (NULL);
 	}
 	//printf("OSt = %s\n", ost);
 	return(ost);
@@ -93,14 +112,15 @@ char	*get_next_line(int fd)
 				ost = ft_check_ost(ost, &res, n_read);
 				if (res)
 				{
-					free(ost);
+					if (ost && ost[0] != '\n')
+						free(ost);
 					return (res);
 				}
 			}
 			else
 			{
-				free(ost);
-				free(res);
+				//free(ost);kmmkkmmk
+				// free(res);
 				return (NULL);
 			}
 		}
@@ -110,13 +130,23 @@ char	*get_next_line(int fd)
 		}
 		ost = ft_check_ost(ost, &res,n_read);
 	}
-	free(ost);
+	//free(ost);
 	return (res);
 }
 
-//  int main()
-// {
-// 	int fd;
-// 	fd = open("test.txt", O_RDONLY);
-// 	printf("res = %s", get_next_line(fd));
-// }
+ int main()
+{
+	int fd;
+	
+	fd = open("text.txt", O_RDONLY);
+	printf("res1 = %s", get_next_line(fd));
+	printf("res2 = %s", get_next_line(fd));
+	printf("res3 = %s", get_next_line(fd));
+	printf("res4 = %s", get_next_line(fd));
+	printf("res5 = %s", get_next_line(fd));
+	printf("res6 = %s", get_next_line(fd));
+	printf("res7 = %s", get_next_line(fd));
+	printf("res8 = %s", get_next_line(fd));
+	printf("res9 = %s", get_next_line(fd));
+	printf("res10 = %s", get_next_line(fd));
+}
