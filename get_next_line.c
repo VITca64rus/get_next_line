@@ -34,7 +34,6 @@ static char	*ft_check_ost(char *ost, char **res, int n_read, size_t *size_ost)
 	int		id_n;
 	int		i;
 	char	*tmp;
-	int		len_tmp;
 
 	id_n = find_n(ost);
 	if (id_n != -1)
@@ -49,19 +48,9 @@ static char	*ft_check_ost(char *ost, char **res, int n_read, size_t *size_ost)
 		(*res)[i] = '\0';
 		if (ost[i] != '\0')
 		{
-			//ost = &ost[i];
 			tmp = ost;
 			*size_ost = (*size_ost)-id_n;
-			ost = malloc((*size_ost)+1);
-			i = 0;
-			len_tmp = (int)(ft_strlen(tmp));
-			while (id_n < len_tmp)
-			{
-				ost[i] = tmp[id_n];
-				i++;
-				id_n++;
-			}
-			ost[i] = '\0';
+			ost = ft_strdup(&ost[id_n], *size_ost);
 			free(tmp);
 		}
 		else
@@ -100,12 +89,12 @@ char	*get_next_line(int fd)
 			if (ost)
 			{
 				for_free = ost;
-				ost = ft_strjoin(ost, buf, &size_ost);
+				ost = ft_strjoin(ost, buf, &size_ost, n_read);
 				free(for_free);
 			}
 			else
 			{
-				size_ost = ft_strlen(buf);
+				size_ost = n_read;
 				ost = ft_strdup(buf, size_ost);
 			}
 		}

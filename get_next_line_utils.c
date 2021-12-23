@@ -12,33 +12,19 @@
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
-
-char	*ft_strjoin(char const *s1, char const *s2, size_t *size_ost)
+char	*ft_strjoin(char const *s1, char const *s2, size_t *size_ost, size_t len_s2)
 {
 	char			*res;
 	unsigned int	i;
 	unsigned int	j;
-	size_t			len_s1;
-	size_t			len_s2;
 
 	if (!s1)
 		return ((void *)0);
 	i = 0;
-	len_s1 = *size_ost;
-	len_s2 = ft_strlen(s2);
-	res = (char *)malloc(len_s1 + len_s2 + 1);
+	res = (char *)malloc(*size_ost + len_s2 + 1);
 	if (!res)
 		return ((void *)0);
-	while (i < len_s1)
+	while (i < *size_ost)
 	{
 		res[i] = s1[i];
 		i++;
@@ -51,24 +37,8 @@ char	*ft_strjoin(char const *s1, char const *s2, size_t *size_ost)
 		j++;
 	}
 	res[i] = '\0';
-	*size_ost = len_s1 + len_s2;
+	*size_ost = *size_ost + len_s2;
 	return (res);
-}
-
-char	*ft_strchr(const char *s, int c)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if ((unsigned char)s[i] == (unsigned char)c)
-			return ((char *)&s[i]);
-		i++;
-	}
-	if (c == '\0')
-		return ((char *)&s[i]);
-	return ((void *)0);
 }
 
 static void	*ft_memcpy(void *dst, const void *src, size_t n)
@@ -93,7 +63,6 @@ static void	*ft_memcpy(void *dst, const void *src, size_t n)
 char	*ft_strdup(const char *s1, size_t size_ost)
 {
 	char	*res;
-	//size_t	size;
 
 	res = malloc(size_ost + 1);
 	if (!res)
