@@ -30,13 +30,12 @@ int	find_n(char *ost)
 
 static char	*ft_check_ost(char *ost, char **res, int n_read)
 {
-	//char	*p_n;
-	int id_n;
-	//char		*for_free;
-	int i;
-	char *tmp;
+	int		id_n;
+	int		i;
+	char	*tmp;
+	int		len_tmp;
+
 	id_n = find_n(ost);
-	//p_n = ft_strchr(ost, '\n');
 	if (id_n != -1)
 	{
 		*res = (char *)malloc(id_n + 1);
@@ -52,7 +51,8 @@ static char	*ft_check_ost(char *ost, char **res, int n_read)
 			tmp = ost;
 			ost = malloc(ft_strlen(ost)-id_n+1);
 			i = 0;
-			while (id_n < (int)ft_strlen(tmp))
+			len_tmp = (int)ft_strlen(tmp);
+			while (id_n < len_tmp)
 			{
 				ost[i] = tmp[id_n];
 				i++;
@@ -75,7 +75,6 @@ static char	*ft_check_ost(char *ost, char **res, int n_read)
 		ost = NULL;
 		return (NULL);
 	}
-	//printf("OSt = %s\n", ost);
 	return(ost);
 }
 
@@ -101,9 +100,7 @@ char	*get_next_line(int fd)
 				free(for_free);
 			}
 			else
-			{
 				ost = ft_strdup(buf);
-			}
 		}
 		else if (n_read == 0)
 		{
@@ -111,42 +108,14 @@ char	*get_next_line(int fd)
 			{
 				ost = ft_check_ost(ost, &res, n_read);
 				if (res)
-				{
-					if (ost && ost[0] != '\n')
-						free(ost);
 					return (res);
-				}
 			}
 			else
-			{
-				//free(ost);kmmkkmmk
-				// free(res);
 				return (NULL);
-			}
 		}
 		else
-		{
 			return (NULL);
-		}
 		ost = ft_check_ost(ost, &res,n_read);
 	}
-	//free(ost);
 	return (res);
-}
-
- int main()
-{
-	int fd;
-	
-	fd = open("text.txt", O_RDONLY);
-	printf("res1 = %s", get_next_line(fd));
-	printf("res2 = %s", get_next_line(fd));
-	printf("res3 = %s", get_next_line(fd));
-	printf("res4 = %s", get_next_line(fd));
-	printf("res5 = %s", get_next_line(fd));
-	printf("res6 = %s", get_next_line(fd));
-	printf("res7 = %s", get_next_line(fd));
-	printf("res8 = %s", get_next_line(fd));
-	printf("res9 = %s", get_next_line(fd));
-	printf("res10 = %s", get_next_line(fd));
 }
