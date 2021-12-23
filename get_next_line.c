@@ -28,7 +28,8 @@ int	find_n(char *ost)
 	return (-1);
 }
 
-static char	*ft_check_ost(char *ost, char **res, int n_read)
+
+static char	*ft_check_ost(char *ost, char **res, int n_read, size_t *size_ost)
 {
 	int		id_n;
 	int		i;
@@ -48,10 +49,12 @@ static char	*ft_check_ost(char *ost, char **res, int n_read)
 		(*res)[i] = '\0';
 		if (ost[i] != '\0')
 		{
+			//ost = &ost[i];
 			tmp = ost;
-			ost = malloc(ft_strlen(ost)-id_n+1);
+			*size_ost = (*size_ost)-id_n;
+			ost = malloc((*size_ost)+1);
 			i = 0;
-			len_tmp = (int)ft_strlen(tmp);
+			len_tmp = (int)(ft_strlen(tmp));
 			while (id_n < len_tmp)
 			{
 				ost[i] = tmp[id_n];
@@ -69,7 +72,7 @@ static char	*ft_check_ost(char *ost, char **res, int n_read)
 	}
 	else if (id_n == -1 && n_read == 0)
 	{
-		*res = ft_strdup(ost);
+		*res = ft_strdup(ost, *size_ost);
 		if (ost)
 			free(ost);
 		ost = NULL;
@@ -83,6 +86,7 @@ char	*get_next_line(int fd)
 	char		buf[BUFFER_SIZE + 1];
 	char		*res;
 	static char	*ost;
+	static size_t size_ost;
 	char		*for_free;
 	int			n_read;
 
@@ -96,17 +100,20 @@ char	*get_next_line(int fd)
 			if (ost)
 			{
 				for_free = ost;
-				ost = ft_strjoin(ost, buf);
+				ost = ft_strjoin(ost, buf, &size_ost);
 				free(for_free);
 			}
 			else
-				ost = ft_strdup(buf);
+			{
+				size_ost = ft_strlen(buf);
+				ost = ft_strdup(buf, size_ost);
+			}
 		}
 		else if (n_read == 0)
 		{
 			if (ost)
 			{
-				ost = ft_check_ost(ost, &res, n_read);
+				ost = ft_check_ost(ost, &res, n_read, &size_ost);
 				if (res)
 					return (res);
 			}
@@ -115,7 +122,7 @@ char	*get_next_line(int fd)
 		}
 		else
 			return (NULL);
-		ost = ft_check_ost(ost, &res,n_read);
+		ost = ft_check_ost(ost, &res, n_read,&size_ost);
 	}
 	return (res);
 }
