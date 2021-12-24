@@ -14,28 +14,27 @@
 #include <unistd.h>
 #include "get_next_line.h"
 #include <stdio.h>
+#include <time.h>
 
-int	find_n(char *ost)
+int	find_n(char *ost, int *id_last_check)
 {
-	int i;
-	i = 0;
-	while(ost[i] != '\0')
+	while(ost[*id_last_check] != '\0')
 	{
-		if (ost[i] == '\n')
-			return (i + 1);
-		i++;
+		if (ost[*id_last_check] == '\n')
+			return (*id_last_check + 1);
+		*id_last_check = *id_last_check + 1;
 	}
 	return (-1);
 }
 
 
-static char	*ft_check_ost(char *ost, char **res, int n_read, size_t *size_ost)
+static char	*ft_check_ost(char *ost, char **res, int n_read, size_t *size_ost, int *id_last_check)
 {
 	int		id_n;
 	int		i;
 	char	*tmp;
 
-	id_n = find_n(ost);
+	id_n = find_n(ost, id_last_check);
 	if (id_n != -1)
 	{
 		*res = (char *)malloc(id_n + 1);
@@ -51,6 +50,7 @@ static char	*ft_check_ost(char *ost, char **res, int n_read, size_t *size_ost)
 			tmp = ost;
 			*size_ost = (*size_ost)-id_n;
 			ost = ft_strdup(&ost[id_n], *size_ost);
+			*id_last_check = 0;
 			free(tmp);
 		}
 		else
@@ -78,6 +78,7 @@ char	*get_next_line(int fd)
 	static size_t size_ost;
 	char		*for_free;
 	int			n_read;
+	static int	id_last_check;
 
 	res = NULL;
 	while (!res)
@@ -95,6 +96,7 @@ char	*get_next_line(int fd)
 			else
 			{
 				size_ost = n_read;
+				id_last_check = 0;
 				ost = ft_strdup(buf, size_ost);
 			}
 		}
@@ -102,7 +104,7 @@ char	*get_next_line(int fd)
 		{
 			if (ost)
 			{
-				ost = ft_check_ost(ost, &res, n_read, &size_ost);
+				ost = ft_check_ost(ost, &res, n_read, &size_ost, &id_last_check);
 				if (res)
 					return (res);
 			}
@@ -111,7 +113,19 @@ char	*get_next_line(int fd)
 		}
 		else
 			return (NULL);
-		ost = ft_check_ost(ost, &res, n_read,&size_ost);
+		ost = ft_check_ost(ost, &res, n_read, &size_ost, &id_last_check);
 	}
 	return (res);
 }
+
+// int main()
+// {
+	
+// 	int fd = open("test.txt", O_RDONLY);
+// 	clock_t start = clock(), diff;
+// 	get_next_line(fd);
+// 	diff = clock() - start;
+//     int msec1 = diff * 1000 / CLOCKS_PER_SEC;
+//     printf("Time taken %d seconds %d milliseconds", msec1/1000, msec1%1000);
+//     return 0;
+// }
