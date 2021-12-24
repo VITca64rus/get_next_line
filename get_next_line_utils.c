@@ -6,13 +6,14 @@
 /*   By: sazelda <sazelda@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/25 15:06:28 by sazelda           #+#    #+#             */
-/*   Updated: 2021/10/25 18:25:55 by sazelda          ###   ########.fr       */
+/*   Updated: 2021/12/24 13:53:52 by sazelda          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strjoin(char const *s1, char const *s2, size_t *size_ost, size_t len_s2)
+char	*ft_strjoin(char const *s1, char const *s2, \
+					size_t *size_ost, size_t len_s2)
 {
 	char			*res;
 	unsigned int	i;
